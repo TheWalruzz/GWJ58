@@ -20,7 +20,8 @@ enum TileSource {
 
 const EMPTY_VECTOR := Vector2i(-100, -100)
 
-@export var shrineAtlasCoords := Vector2i(5, 2)
+@export var time_limit := 30
+@export var shrine_atlas_coords := Vector2i(5, 2)
 
 var tiles: Dictionary = {}
 var last_hovered := EMPTY_VECTOR
@@ -38,7 +39,7 @@ func _ready() -> void:
 		tile_data.has_shrine = get_cell_source_id(TileLayer.MIDDLE, _get_shrine_coords(coords)) != -1
 		tiles[coords] = tile_data
 		
-	PlayerService.start_level(self)
+	PlayerService.start_level(self, time_limit)
 
 
 func _input(event: InputEvent) -> void:
@@ -78,21 +79,13 @@ func _get_desert_tiles() -> Array[Vector2i]:
 
 	
 func _get_closest_green_coords(coords: Vector2i) -> Array[Vector2i]:
-	var candidates: Array[Vector2i] = []
-	for i in range(-1, 1):
-		for j in range(-1, 1):
-			var test_coords := Vector2i(coords.x + i, coords.y + j)
-			if is_green(test_coords):
-				candidates.append(test_coords)
-	
-	return candidates
+	return _get_coords_around(coords, 1).filter(is_green)
 	
 	
 func _is_shrine_in_area(coords: Vector2i) -> bool:
-	for i in range(-2, 2):
-		for j in range(-2, 2):
-			var test_coords := Vector2i(coords.x + i, coords.y + j)
-			if tiles.has(test_coords) and tiles[test_coords].has_shrine:
+	var neighbours := _get_coords_around(coords, 2)
+	for tile in neighbours:
+		if tiles.has(tile) and tiles[tile].has_shrine:
 				return true
 	return false
 	
@@ -110,6 +103,16 @@ func _set_hover(coords: Vector2i, hover: bool) -> void:
 
 func _get_data(target_coords: Vector2i, layer_id: int) -> bool:
 	return get_cell_tile_data(TileLayer.BOTTOM, target_coords).get_custom_data_by_layer_id(layer_id)
+	
+	
+func _get_coords_around(coords: Vector2i, depth := 1) -> Array[Vector2i]:
+	var results: Array[Vector2i] = []
+	
+	for i in range(-depth, depth):
+		for j in range(-depth, depth):
+			results.append(Vector2i(coords.x + i, coords.y + j))
+			
+	return results
 
 	
 func is_buildable(target_coords: Vector2i) -> bool:
@@ -134,7 +137,9 @@ func tick() -> void:
 	for tile in desert_tiles:
 		candidates.append_array(_get_closest_green_coords(tile))
 		
-	candidates.assign(candidates.filter(func(coords: Vector2i): return not _is_shrine_in_area(coords)))
+	var unique_candidates := ArrayUtils.unique(candidates.filter(func(coords: Vector2i): return not _is_shrine_in_area(coords)))
+		
+	candidates.assign(unique_candidates.filter(func(coords: Vector2i): return not _is_shrine_in_area(coords)))
 		
 	if candidates.size() > 5:
 		candidates.shuffle()

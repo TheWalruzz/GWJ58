@@ -19,8 +19,8 @@ func _ready() -> void:
 	randomize()
 
 
-func start_level(level: LevelMap) -> void:
-	time.value = 60
+func start_level(level: LevelMap, total_time := 60) -> void:
+	time.value = total_time
 	energy.value = 5
 	disposables = SxCompositeDisposable.new()
 	Sx.interval_timer(3.0).take_while(func(): return time.value > 0) \
