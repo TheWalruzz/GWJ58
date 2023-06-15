@@ -19,6 +19,7 @@ enum TileSource {
 
 
 const EMPTY_VECTOR := Vector2i(-100, -100)
+const RainCloudScene := preload("res://scenes/components/rain_cloud.tscn")
 
 @export var time_limit := 30
 @export var shrine_atlas_coords := Vector2i(5, 2)
@@ -68,7 +69,12 @@ func _input(event: InputEvent) -> void:
 							if PlayerService.energy.value >= Consts.RAIN_ENERGY_COST:
 								PlayerService.energy.value -= Consts.RAIN_ENERGY_COST
 								tiles[target_coords].is_raining = true
-								# TODO: show cloud
+								
+								var local_tile_coords := map_to_local(target_coords)
+								var cloud := RainCloudScene.instantiate()
+								cloud.position = Vector2(local_tile_coords.x, local_tile_coords.y - 192)
+								add_child(cloud)
+								
 								Sx.interval_timer(Consts.RAIN_INTERVAL).take(Consts.RAIN_ITERATIONS).subscribe(
 									func():
 										_toggle_cells(
@@ -78,6 +84,7 @@ func _input(event: InputEvent) -> void:
 										),
 									0,
 									func():
+										cloud.fade_and_free()
 										tiles[target_coords].is_raining = false
 										PlayerService.building_mode.value = PlayerService.BuildingMode.NONE
 								).dispose_with(self)
@@ -153,6 +160,7 @@ func _is_desert(target_coords: Vector2i) -> bool:
 func _can_build_shrine(coords: Vector2i) -> bool:
 	return _is_buildable(coords) and \
 		not tiles[coords].has_shrine and \
+		not tiles[coords].is_raining and \
 		PlayerService.building_mode.value == PlayerService.BuildingMode.SHRINE
 	
 	
@@ -187,7 +195,7 @@ func tick() -> void:
 		candidates.filter(func(coords: Vector2i): 
 				return not _is_shrine_in_area(coords) and not tiles[coords].is_raining),
 		TileSource.DESERT,
-		5
+		Consts.DESERT_TILES_PER_ITERATION
 	)
 
 

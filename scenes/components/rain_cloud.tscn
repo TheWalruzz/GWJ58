@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://dtxwyshn15572"]
+
+[ext_resource type="Script" path="res://scripts/components/rain_cloud.gd" id="1_0ty4n"]
+[ext_resource type="Texture2D" uid="uid://cplrnutwpteop" path="res://assets/gfx/sprites/clouds/Cloud 5.png" id="1_mhh1e"]
+[ext_resource type="Texture2D" uid="uid://derikmxpxnhxq" path="res://assets/gfx/1x1.png" id="1_oqm35"]
+[ext_resource type="Texture2D" uid="uid://e3it4ce771qu" path="res://assets/gfx/sprites/shadow.png" id="4_4hihp"]
+
+[sub_resource type="Curve" id="Curve_5xfop"]
+_data = [Vector2(0, 1), 0.0, -0.386562, 0, 0, Vector2(1, 0), -4.18396, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_3na4l"]
+offsets = PackedFloat32Array(0, 0.986441, 1)
+colors = PackedColorArray(0, 0.631373, 1, 0.941176, 0, 0.631373, 1, 0.941176, 1, 1, 1, 0)
+
+[node name="RainCloud" type="Node2D"]
+scale = Vector2(3, 3)
+script = ExtResource("1_0ty4n")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+z_index = 6
+amount = 48
+lifetime = 0.35
+speed_scale = 0.7
+randomness = 0.1
+local_coords = true
+texture = ExtResource("1_oqm35")
+emission_shape = 3
+emission_rect_extents = Vector2(40, 1)
+direction = Vector2(0, 1)
+initial_velocity_max = 20.0
+linear_accel_min = -10.0
+linear_accel_max = 10.0
+scale_amount_min = 2.5
+scale_amount_max = 2.5
+split_scale = true
+scale_curve_x = SubResource("Curve_5xfop")
+scale_curve_y = null
+color_ramp = SubResource("Gradient_3na4l")
+
+[node name="Cloud" type="Sprite2D" parent="."]
+z_index = 7
+position = Vector2(0, -3)
+texture = ExtResource("1_mhh1e")
+
+[node name="Shadow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.470588)
+z_index = 5
+position = Vector2(0.666667, 64)
+scale = Vector2(0.349462, 0.349462)
+texture = ExtResource("4_4hihp")

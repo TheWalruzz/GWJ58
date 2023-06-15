@@ -18,7 +18,7 @@ config/icon="res://icon.svg"
 
 Sx="*res://addons/signal_extensions/sx_autoload.gd"
 PlayerService="*res://scripts/services/player_service.gd"
-UI="*res://scenes/ui/ui_root.tscn"
+UIService="*res://scenes/ui/ui_root.tscn"
 
 [editor]
 
