@@ -7,7 +7,7 @@
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3yq0q"]
 resource_name = "Desert"
 texture = ExtResource("1_xqrir")
-texture_region_size = Vector2i(264, 360)
+texture_region_size = Vector2i(265, 360)
 0:1/0 = 0
 0:1/0/texture_origin = Vector2i(0, 7)
 1:1/0 = 0
@@ -91,7 +91,7 @@ texture_region_size = Vector2i(264, 360)
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1ubrc"]
 resource_name = "Green"
 texture = ExtResource("2_c4u1k")
-texture_region_size = Vector2i(264, 360)
+texture_region_size = Vector2i(265, 360)
 0:0/0 = 0
 0:0/0/texture_origin = Vector2i(0, 7)
 1:0/0 = 0

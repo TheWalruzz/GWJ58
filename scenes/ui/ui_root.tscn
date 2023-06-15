@@ -32,79 +32,84 @@ size_flags_horizontal = 3
 alignment = 2
 
 [node name="RainButtonContainer" type="VBoxContainer" parent="UIContainer/HSplitContainer/RightContainer"]
-custom_minimum_size = Vector2(0, 175)
 layout_mode = 2
-alignment = 2
+alignment = 1
 
 [node name="RainButton" type="TextureButton" parent="UIContainer/HSplitContainer/RightContainer/RainButtonContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 164)
+custom_minimum_size = Vector2(40, 60)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 4
 texture_normal = ExtResource("1_iailb")
 ignore_texture_size = true
 stretch_mode = 4
 
 [node name="RainCost" type="HBoxContainer" parent="UIContainer/HSplitContainer/RightContainer/RainButtonContainer"]
-custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 4
+size_flags_vertical = 4
 alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/RainButtonContainer/RainCost"]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 texture = ExtResource("3_r0xij")
-expand_mode = 3
+expand_mode = 1
 
 [node name="TextureRect2" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/RainButtonContainer/RainCost"]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 texture = ExtResource("3_r0xij")
-expand_mode = 3
+expand_mode = 1
 
 [node name="ShrineButtonContainer" type="VBoxContainer" parent="UIContainer/HSplitContainer/RightContainer"]
-custom_minimum_size = Vector2(0, 175)
 layout_mode = 2
 alignment = 2
 
 [node name="ShrineButton" type="TextureButton" parent="UIContainer/HSplitContainer/RightContainer/ShrineButtonContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 164)
+custom_minimum_size = Vector2(40, 60)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 4
 texture_normal = ExtResource("1_iailb")
 ignore_texture_size = true
 stretch_mode = 4
 
 [node name="ShrineCost" type="HBoxContainer" parent="UIContainer/HSplitContainer/RightContainer/ShrineButtonContainer"]
-custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 4
+size_flags_vertical = 4
 alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/ShrineButtonContainer/ShrineCost"]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 texture = ExtResource("3_r0xij")
-expand_mode = 3
+expand_mode = 1
 
 [node name="TextureRect2" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/ShrineButtonContainer/ShrineCost"]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 texture = ExtResource("3_r0xij")
-expand_mode = 3
+expand_mode = 1
 
 [node name="TextureRect3" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/ShrineButtonContainer/ShrineCost"]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 texture = ExtResource("3_r0xij")
-expand_mode = 3
+expand_mode = 1
 
 [node name="TextureRect4" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/ShrineButtonContainer/ShrineCost"]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 texture = ExtResource("3_r0xij")
-expand_mode = 3
+expand_mode = 1
 
 [node name="TextureRect5" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/ShrineButtonContainer/ShrineCost"]
+custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
 texture = ExtResource("3_r0xij")
-expand_mode = 3
+expand_mode = 1
 
 [connection signal="pressed" from="UIContainer/HSplitContainer/RightContainer/RainButtonContainer/RainButton" to="." method="_on_rain_button_pressed"]
 [connection signal="pressed" from="UIContainer/HSplitContainer/RightContainer/ShrineButtonContainer/ShrineButton" to="." method="_on_shrine_button_pressed"]
