@@ -30,8 +30,7 @@ var last_hovered := EMPTY_VECTOR
 
 
 func _ready() -> void:
-	if OS.is_debug_build():
-		debug_label.visible = true
+	debug_label.visible = OS.is_debug_build()
 	
 	for cell in get_used_cells(TileLayer.BOTTOM):
 		var coords := cell as Vector2i
@@ -48,42 +47,66 @@ func _input(event: InputEvent) -> void:
 		var target_coords := local_to_map(to_local(get_global_mouse_position()))
 		
 		if OS.is_debug_build():
-			debug_label.text = str(target_coords)
+			debug_label.text = "%s\n%s" % [str(target_coords), str(PlayerService.building_mode.value)]
 			
 		# hover
-		if last_hovered != EMPTY_VECTOR and last_hovered != target_coords and is_green(last_hovered):
+		if PlayerService.building_mode.value != PlayerService.BuildingMode.NONE or \
+			(last_hovered != EMPTY_VECTOR and last_hovered != target_coords):
 				_set_hover(last_hovered, false)
 		if PlayerService.building_mode.value != PlayerService.BuildingMode.NONE \
 			and tiles.has(target_coords) \
-			and is_green(target_coords) \
+			and (_can_call_rain(target_coords) or _can_build_shrine(target_coords)) \
 			and not tiles[target_coords].is_raining \
 			and not tiles[target_coords].has_shrine:
 				_set_hover(target_coords, true)
 				last_hovered = target_coords
 		
-		# actions
-		if event.is_action_pressed("pointer_click"):
-			# TODO: check if has enough energy
-			# TODO: build stuff
-			pass
+				# actions
+				if event.is_action_pressed("pointer_click"):
+					match PlayerService.building_mode.value:
+						PlayerService.BuildingMode.RAIN:
+							if PlayerService.energy.value >= Consts.RAIN_ENERGY_COST:
+								PlayerService.energy.value -= Consts.RAIN_ENERGY_COST
+								tiles[target_coords].is_raining = true
+								# TODO: show cloud
+								Sx.interval_timer(Consts.RAIN_INTERVAL).take(Consts.RAIN_ITERATIONS).subscribe(
+									func():
+										_toggle_cells(
+											_get_closest_desert_coords(target_coords), 
+											TileSource.GREEN, 
+											Consts.RAIN_TILES_PER_ITERATION
+										),
+									0,
+									func():
+										tiles[target_coords].is_raining = false
+										PlayerService.building_mode.value = PlayerService.BuildingMode.NONE
+								).dispose_with(self)
+						PlayerService.BuildingMode.SHRINE:
+							if PlayerService.energy.value >= Consts.SHRINE_ENERGY_COST:
+								PlayerService.energy.value -= Consts.SHRINE_ENERGY_COST
+								tiles[target_coords].has_shrine = true
+								set_cell(TileLayer.MIDDLE, _get_shrine_coords(target_coords), TileSource.GREEN, shrine_atlas_coords)
+								PlayerService.building_mode.value = PlayerService.BuildingMode.NONE
 				
 
 func _get_shrine_coords(coords: Vector2i) -> Vector2i:
-	return Vector2i(coords.x, coords.y - 1)
+	return Vector2i(coords.x + 1, coords.y - 1)
 
 
 func _get_desert_tiles() -> Array[Vector2i]:
-	return get_used_cells(TileLayer.BOTTOM).filter(func(cell: Vector2i):
-			return get_cell_source_id(TileLayer.BOTTOM, cell) == TileSource.DESERT
-	)
+	return get_used_cells(TileLayer.BOTTOM).filter(_is_desert)
 
 	
 func _get_closest_green_coords(coords: Vector2i) -> Array[Vector2i]:
-	return _get_coords_around(coords, 1).filter(is_green)
+	return _get_coords_around(coords, Consts.SHRINE_BORDER_DEPTH).filter(_is_green)
+	
+	
+func _get_closest_desert_coords(coords: Vector2i) -> Array[Vector2i]:
+	return _get_coords_around(coords, Consts.RAIN_BORDER_DEPTH).filter(_is_desert)
 	
 	
 func _is_shrine_in_area(coords: Vector2i) -> bool:
-	var neighbours := _get_coords_around(coords, 2)
+	var neighbours := _get_coords_around(coords, Consts.SHRINE_BORDER_DEPTH)
 	for tile in neighbours:
 		if tiles.has(tile) and tiles[tile].has_shrine:
 				return true
@@ -95,7 +118,7 @@ func _set_hover(coords: Vector2i, hover: bool) -> void:
 	set_cell(
 		TileLayer.BOTTOM,
 		coords,
-		TileSource.GREEN,
+		get_cell_source_id(TileLayer.BOTTOM, coords),
 		atlas_coords,
 		1 if hover else 0
 	)
@@ -108,23 +131,46 @@ func _get_data(target_coords: Vector2i, layer_id: int) -> bool:
 func _get_coords_around(coords: Vector2i, depth := 1) -> Array[Vector2i]:
 	var results: Array[Vector2i] = []
 	
-	for i in range(-depth, depth):
-		for j in range(-depth, depth):
+	for i in range(-depth, depth + 1):
+		for j in range(-depth, depth + 1):
 			results.append(Vector2i(coords.x + i, coords.y + j))
 			
 	return results
 
 	
-func is_buildable(target_coords: Vector2i) -> bool:
+func _is_buildable(target_coords: Vector2i) -> bool:
 	return _get_data(target_coords, DataLayer.BUILDABLE)
 	
 	
-func is_green(target_coords: Vector2i) -> bool:
+func _is_green(target_coords: Vector2i) -> bool:
 	return get_cell_source_id(TileLayer.BOTTOM, target_coords) == TileSource.GREEN
 	
 	
-func is_desert(target_coords: Vector2i) -> bool:
+func _is_desert(target_coords: Vector2i) -> bool:
 	return get_cell_source_id(TileLayer.BOTTOM, target_coords) == TileSource.DESERT
+	
+	
+func _can_build_shrine(coords: Vector2i) -> bool:
+	return _is_buildable(coords) and \
+		not tiles[coords].has_shrine and \
+		PlayerService.building_mode.value == PlayerService.BuildingMode.SHRINE
+	
+	
+func _can_call_rain(coords: Vector2i) -> bool:
+	return _is_desert(coords) and PlayerService.building_mode.value == PlayerService.BuildingMode.RAIN
+	
+	
+func _toggle_cells(coords_list: Array[Vector2i], source_id: TileSource, max_tiles := -1) -> void:
+	var candidates: Array[Vector2i] = []
+	candidates.assign(ArrayUtils.unique(coords_list))
+		
+	if max_tiles > -1 and candidates.size() > max_tiles:
+		candidates.shuffle()
+		candidates.resize(max_tiles)
+		
+	for tile in candidates:
+		var atlas_coords := get_cell_atlas_coords(TileLayer.BOTTOM, tile)
+		set_cell(TileLayer.BOTTOM, tile, source_id, atlas_coords)
 
 
 func tick() -> void:
@@ -137,17 +183,12 @@ func tick() -> void:
 	for tile in desert_tiles:
 		candidates.append_array(_get_closest_green_coords(tile))
 		
-	var unique_candidates := ArrayUtils.unique(candidates.filter(func(coords: Vector2i): return not _is_shrine_in_area(coords)))
-		
-	candidates.assign(unique_candidates.filter(func(coords: Vector2i): return not _is_shrine_in_area(coords)))
-		
-	if candidates.size() > 5:
-		candidates.shuffle()
-		candidates.resize(5)
-		
-	for tile in candidates:
-		var atlas_coords := get_cell_atlas_coords(TileLayer.BOTTOM, tile)
-		set_cell(TileLayer.BOTTOM, tile, TileSource.DESERT, atlas_coords)
+	_toggle_cells(
+		candidates.filter(func(coords: Vector2i): 
+				return not _is_shrine_in_area(coords) and not tiles[coords].is_raining),
+		TileSource.DESERT,
+		5
+	)
 
 
 class MapTileData:
