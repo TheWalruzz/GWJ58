@@ -48,53 +48,64 @@ func _input(event: InputEvent) -> void:
 		var target_coords := local_to_map(to_local(get_global_mouse_position()))
 		
 		if OS.is_debug_build():
-			debug_label.text = "%s\n%s" % [str(target_coords), str(PlayerService.building_mode.value)]
+			debug_label.text = "%s" % str(target_coords)
 			
 		# hover
-		if PlayerService.building_mode.value != PlayerService.BuildingMode.NONE or \
-			(last_hovered != EMPTY_VECTOR and last_hovered != target_coords):
+		if last_hovered != EMPTY_VECTOR and last_hovered != target_coords:
 				_set_hover(last_hovered, false)
-		if PlayerService.building_mode.value != PlayerService.BuildingMode.NONE \
-			and tiles.has(target_coords) \
-			and (_can_call_rain(target_coords) or _can_build_shrine(target_coords)) \
+		if tiles.has(target_coords) \
+			and _is_buildable(target_coords) \
 			and not tiles[target_coords].is_raining \
 			and not tiles[target_coords].has_shrine:
 				_set_hover(target_coords, true)
 				last_hovered = target_coords
 		
 				# actions
-				if event.is_action_pressed("pointer_click"):
-					match PlayerService.building_mode.value:
-						PlayerService.BuildingMode.RAIN:
-							if PlayerService.energy.value >= Consts.RAIN_ENERGY_COST:
-								PlayerService.energy.value -= Consts.RAIN_ENERGY_COST
-								tiles[target_coords].is_raining = true
-								
-								var local_tile_coords := map_to_local(target_coords)
-								var cloud := RainCloudScene.instantiate()
-								cloud.position = Vector2(local_tile_coords.x, local_tile_coords.y - 192)
-								add_child(cloud)
-								
-								Sx.interval_timer(Consts.RAIN_INTERVAL).take(Consts.RAIN_ITERATIONS).subscribe(
-									func():
-										_toggle_cells(
-											_get_closest_desert_coords(target_coords), 
-											TileSource.GREEN, 
-											Consts.RAIN_TILES_PER_ITERATION
-										),
-									0,
-									func():
-										cloud.fade_and_free()
-										tiles[target_coords].is_raining = false
-										PlayerService.building_mode.value = PlayerService.BuildingMode.NONE
-								).dispose_with(self)
-						PlayerService.BuildingMode.SHRINE:
-							if PlayerService.energy.value >= Consts.SHRINE_ENERGY_COST:
-								PlayerService.energy.value -= Consts.SHRINE_ENERGY_COST
-								tiles[target_coords].has_shrine = true
-								set_cell(TileLayer.MIDDLE, _get_shrine_coords(target_coords), TileSource.GREEN, shrine_atlas_coords)
-								PlayerService.building_mode.value = PlayerService.BuildingMode.NONE
-				
+				if event.is_action_pressed("call_rain") and _can_call_rain(target_coords):
+					PlayerService.energy.value -= Consts.RAIN_ENERGY_COST
+					tiles[target_coords].is_raining = true
+					
+					var local_tile_coords := map_to_local(target_coords)
+					var cloud := RainCloudScene.instantiate()
+					cloud.position = Vector2(local_tile_coords.x, local_tile_coords.y - 192)
+					add_child(cloud)
+					
+					Sx.interval_timer(Consts.RAIN_INTERVAL).take(Consts.RAIN_ITERATIONS).subscribe(
+						func():
+							_toggle_cells(
+								_get_closest_desert_coords(target_coords), 
+								TileSource.GREEN, 
+								Consts.RAIN_TILES_PER_ITERATION
+							),
+						0,
+						func():
+							cloud.fade_and_free()
+							tiles[target_coords].is_raining = false
+					).dispose_with(self)
+				if event.is_action_pressed("build_shrine") and _can_build_shrine(target_coords):
+					PlayerService.energy.value -= Consts.SHRINE_ENERGY_COST
+					tiles[target_coords].has_shrine = true
+					set_cell(TileLayer.MIDDLE, _get_shrine_coords(target_coords), TileSource.GREEN, shrine_atlas_coords)
+	
+	
+func tick() -> void:
+	var desert_tiles := _get_desert_tiles()
+	if desert_tiles.size() == 0:
+		PlayerService.finish_level()
+		# TODO: win message and next level window
+		return
+	
+	var candidates: Array[Vector2i] = []
+	for tile in desert_tiles:
+		candidates.append_array(_get_closest_green_coords(tile))
+		
+	_toggle_cells(
+		candidates.filter(func(coords: Vector2i): 
+				return not _is_shrine_in_area(coords) and not tiles[coords].is_raining),
+		TileSource.DESERT,
+		Consts.DESERT_TILES_PER_ITERATION
+	)
+	
 
 func _get_shrine_coords(coords: Vector2i) -> Vector2i:
 	return Vector2i(coords.x + 1, coords.y - 1)
@@ -158,14 +169,15 @@ func _is_desert(target_coords: Vector2i) -> bool:
 	
 	
 func _can_build_shrine(coords: Vector2i) -> bool:
-	return _is_buildable(coords) and \
-		not tiles[coords].has_shrine and \
-		not tiles[coords].is_raining and \
-		PlayerService.building_mode.value == PlayerService.BuildingMode.SHRINE
+	return _is_green(coords) \
+		and _is_buildable(coords) \
+		and not tiles[coords].has_shrine  \
+		and not tiles[coords].is_raining \
+		and PlayerService.energy.value >= Consts.SHRINE_ENERGY_COST
 	
 	
 func _can_call_rain(coords: Vector2i) -> bool:
-	return _is_desert(coords) and PlayerService.building_mode.value == PlayerService.BuildingMode.RAIN
+	return _is_desert(coords) and PlayerService.energy.value >= Consts.RAIN_ENERGY_COST
 	
 	
 func _toggle_cells(coords_list: Array[Vector2i], source_id: TileSource, max_tiles := -1) -> void:
@@ -179,24 +191,6 @@ func _toggle_cells(coords_list: Array[Vector2i], source_id: TileSource, max_tile
 	for tile in candidates:
 		var atlas_coords := get_cell_atlas_coords(TileLayer.BOTTOM, tile)
 		set_cell(TileLayer.BOTTOM, tile, source_id, atlas_coords)
-
-
-func tick() -> void:
-	var desert_tiles := _get_desert_tiles()
-	if desert_tiles.size() == 0:
-		PlayerService.finish_level()
-		return
-	
-	var candidates: Array[Vector2i] = []
-	for tile in desert_tiles:
-		candidates.append_array(_get_closest_green_coords(tile))
-		
-	_toggle_cells(
-		candidates.filter(func(coords: Vector2i): 
-				return not _is_shrine_in_area(coords) and not tiles[coords].is_raining),
-		TileSource.DESERT,
-		Consts.DESERT_TILES_PER_ITERATION
-	)
 
 
 class MapTileData:

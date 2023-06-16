@@ -1,9 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://eekwdg77uif6"]
+[gd_scene load_steps=14 format=3 uid="uid://eekwdg77uif6"]
 
-[ext_resource type="Texture2D" uid="uid://cpi4q83sqmytl" path="res://assets/gfx/tilesets/desert/Tiles/grass_pathBend_E.png" id="1_iailb"]
 [ext_resource type="Script" path="res://scripts/services/ui_service.gd" id="1_xowr0"]
 [ext_resource type="Texture2D" uid="uid://cplrnutwpteop" path="res://assets/gfx/sprites/clouds/Cloud 5.png" id="2_sg71o"]
-[ext_resource type="Texture2D" uid="uid://b16pup7lyihii" path="res://icon.svg" id="3_r0xij"]
+[ext_resource type="Texture2D" uid="uid://bderlecmpjgyw" path="res://assets/gfx/sprites/clock.png" id="2_wfbot"]
+[ext_resource type="Script" path="res://scripts/components/ui/clock.gd" id="3_d7v0e"]
+[ext_resource type="Script" path="res://scripts/components/ui/sun_timer.gd" id="4_ufnnx"]
+[ext_resource type="Texture2D" uid="uid://crdydigkatmd4" path="res://assets/gfx/sprites/sun.png" id="4_uwyxh"]
+[ext_resource type="Texture2D" uid="uid://d1vrlvtlvgot3" path="res://assets/gfx/sprites/energy_timer.png" id="6_wvjsr"]
+[ext_resource type="Script" path="res://scripts/components/ui/energy_timer.gd" id="7_rocmw"]
+[ext_resource type="Script" path="res://scripts/components/ui/energy_grid.gd" id="7_ru3ld"]
+[ext_resource type="Texture2D" uid="uid://s2opdikj1ghh" path="res://assets/gfx/sprites/energy.png" id="8_rfb0l"]
+[ext_resource type="Texture2D" uid="uid://dh81nkkktxbpl" path="res://assets/gfx/sprites/LMB.png" id="9_vhwj1"]
+[ext_resource type="Texture2D" uid="uid://cwspl0gtdu4oh" path="res://assets/gfx/sprites/RMB.png" id="12_0d4xl"]
+[ext_resource type="Texture2D" uid="uid://bm70g8dhckp14" path="res://assets/gfx/tilesets/desert/Tiles/shrine-trimmed.png" id="13_ksb58"]
 
 [node name="UIRoot" type="CanvasLayer"]
 script = ExtResource("1_xowr0")
@@ -14,33 +23,89 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="HSplitContainer" type="HSplitContainer" parent="UIContainer"]
+[node name="Container" type="VBoxContainer" parent="UIContainer"]
 layout_mode = 2
-split_offset = 1000
+mouse_filter = 2
+
+[node name="TopContainer" type="SplitContainer" parent="UIContainer/Container"]
+layout_mode = 2
+split_offset = 10
 dragger_visibility = 1
 
-[node name="LeftContainer" type="VBoxContainer" parent="UIContainer/HSplitContainer"]
+[node name="Clock" type="TextureProgressBar" parent="UIContainer/Container/TopContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+value = 100.0
+fill_mode = 5
+texture_progress = ExtResource("2_wfbot")
+script = ExtResource("3_d7v0e")
+
+[node name="SunContainer" type="BoxContainer" parent="UIContainer/Container/TopContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="SunTimer" type="TextureProgressBar" parent="UIContainer/Container/TopContainer/SunContainer"]
+layout_mode = 2
+fill_mode = 5
+texture_progress = ExtResource("4_uwyxh")
+script = ExtResource("4_ufnnx")
+
+[node name="Filler" type="VBoxContainer" parent="UIContainer/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BottomContainer" type="HBoxContainer" parent="UIContainer/Container"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="EnergyTimer" type="TextureProgressBar" parent="UIContainer/Container/BottomContainer"]
+layout_mode = 2
+fill_mode = 5
+texture_progress = ExtResource("6_wvjsr")
+script = ExtResource("7_rocmw")
+
+[node name="VSeparator4" type="VSeparator" parent="UIContainer/Container/BottomContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
-[node name="RightContainer" type="VBoxContainer" parent="UIContainer/HSplitContainer"]
+[node name="EnergyGrid" type="GridContainer" parent="UIContainer/Container/BottomContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-alignment = 2
+size_flags_vertical = 4
+columns = 20
+script = ExtResource("7_ru3ld")
 
-[node name="VBoxContainer" type="HBoxContainer" parent="UIContainer/HSplitContainer/RightContainer"]
+[node name="VSeparator3" type="VSeparator" parent="UIContainer/Container/BottomContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="RainButtonContainer" type="VBoxContainer" parent="UIContainer/Container/BottomContainer"]
 layout_mode = 2
 alignment = 2
 
-[node name="RainButtonContainer" type="VBoxContainer" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer"]
+[node name="MouseButton" type="TextureRect" parent="UIContainer/Container/BottomContainer/RainButtonContainer"]
+custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
-alignment = 2
+texture = ExtResource("9_vhwj1")
+expand_mode = 2
+stretch_mode = 5
 
-[node name="RainButton" type="TextureButton" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/RainButtonContainer"]
+[node name="HSeparator2" type="HSeparator" parent="UIContainer/Container/BottomContainer/RainButtonContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="RainButton" type="TextureButton" parent="UIContainer/Container/BottomContainer/RainButtonContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 24)
 layout_mode = 2
@@ -49,82 +114,96 @@ texture_normal = ExtResource("2_sg71o")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="HSeparator" type="HSeparator" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/RainButtonContainer"]
+[node name="HSeparator" type="HSeparator" parent="UIContainer/Container/BottomContainer/RainButtonContainer"]
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(0, 6)
 layout_mode = 2
 
-[node name="RainCost" type="HBoxContainer" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/RainButtonContainer"]
+[node name="RainCost" type="HBoxContainer" parent="UIContainer/Container/BottomContainer/RainButtonContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/RainButtonContainer/RainCost"]
+[node name="TextureRect" type="TextureRect" parent="UIContainer/Container/BottomContainer/RainButtonContainer/RainCost"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
-texture = ExtResource("3_r0xij")
+texture = ExtResource("8_rfb0l")
 expand_mode = 1
 
-[node name="TextureRect2" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/RainButtonContainer/RainCost"]
+[node name="TextureRect2" type="TextureRect" parent="UIContainer/Container/BottomContainer/RainButtonContainer/RainCost"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
-texture = ExtResource("3_r0xij")
+texture = ExtResource("8_rfb0l")
 expand_mode = 1
 
-[node name="VSeparator" type="VSeparator" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="UIContainer/Container/BottomContainer"]
 modulate = Color(1, 1, 1, 0)
-custom_minimum_size = Vector2(10, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
-[node name="ShrineButtonContainer" type="VBoxContainer" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer"]
+[node name="ShrineButtonContainer" type="VBoxContainer" parent="UIContainer/Container/BottomContainer"]
 layout_mode = 2
 alignment = 2
 
-[node name="ShrineButton" type="TextureButton" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/ShrineButtonContainer"]
+[node name="MouseButton" type="TextureRect" parent="UIContainer/Container/BottomContainer/ShrineButtonContainer"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+texture = ExtResource("12_0d4xl")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="HSeparator" type="HSeparator" parent="UIContainer/Container/BottomContainer/ShrineButtonContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="ShrineButton" type="TextureButton" parent="UIContainer/Container/BottomContainer/ShrineButtonContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 60)
+custom_minimum_size = Vector2(40, 35)
 layout_mode = 2
 size_flags_horizontal = 4
-texture_normal = ExtResource("1_iailb")
+texture_normal = ExtResource("13_ksb58")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="ShrineCost" type="HBoxContainer" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/ShrineButtonContainer"]
+[node name="ShrineCost" type="HBoxContainer" parent="UIContainer/Container/BottomContainer/ShrineButtonContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/ShrineButtonContainer/ShrineCost"]
+[node name="TextureRect" type="TextureRect" parent="UIContainer/Container/BottomContainer/ShrineButtonContainer/ShrineCost"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
-texture = ExtResource("3_r0xij")
+texture = ExtResource("8_rfb0l")
 expand_mode = 1
 
-[node name="TextureRect2" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/ShrineButtonContainer/ShrineCost"]
+[node name="TextureRect2" type="TextureRect" parent="UIContainer/Container/BottomContainer/ShrineButtonContainer/ShrineCost"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
-texture = ExtResource("3_r0xij")
+texture = ExtResource("8_rfb0l")
 expand_mode = 1
 
-[node name="TextureRect3" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/ShrineButtonContainer/ShrineCost"]
+[node name="TextureRect3" type="TextureRect" parent="UIContainer/Container/BottomContainer/ShrineButtonContainer/ShrineCost"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
-texture = ExtResource("3_r0xij")
+texture = ExtResource("8_rfb0l")
 expand_mode = 1
 
-[node name="TextureRect4" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/ShrineButtonContainer/ShrineCost"]
+[node name="TextureRect4" type="TextureRect" parent="UIContainer/Container/BottomContainer/ShrineButtonContainer/ShrineCost"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
-texture = ExtResource("3_r0xij")
+texture = ExtResource("8_rfb0l")
 expand_mode = 1
 
-[node name="TextureRect5" type="TextureRect" parent="UIContainer/HSplitContainer/RightContainer/VBoxContainer/ShrineButtonContainer/ShrineCost"]
+[node name="TextureRect5" type="TextureRect" parent="UIContainer/Container/BottomContainer/ShrineButtonContainer/ShrineCost"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
-texture = ExtResource("3_r0xij")
+texture = ExtResource("8_rfb0l")
 expand_mode = 1
 
-[connection signal="pressed" from="UIContainer/HSplitContainer/RightContainer/VBoxContainer/RainButtonContainer/RainButton" to="." method="_on_rain_button_pressed"]
-[connection signal="pressed" from="UIContainer/HSplitContainer/RightContainer/VBoxContainer/ShrineButtonContainer/ShrineButton" to="." method="_on_shrine_button_pressed"]
+[node name="VSeparator2" type="VSeparator" parent="UIContainer/Container/BottomContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2

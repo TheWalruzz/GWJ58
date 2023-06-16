@@ -16,11 +16,3 @@ func _ready() -> void:
 
 func toggle_ui(value: bool) -> void:
 	ui.visible = value
-
-
-func _on_rain_button_pressed() -> void:
-	PlayerService.building_mode.value = PlayerService.BuildingMode.RAIN
-
-
-func _on_shrine_button_pressed() -> void:
-	PlayerService.building_mode.value = PlayerService.BuildingMode.SHRINE

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7ev6506o0o40"]
+
+[ext_resource type="Texture2D" uid="uid://s2opdikj1ghh" path="res://assets/gfx/sprites/energy.png" id="1_gig8y"]
+
+[node name="Energy" type="TextureRect"]
+custom_minimum_size = Vector2(30, 30)
+texture = ExtResource("1_gig8y")
+expand_mode = 1
+stretch_mode = 4
