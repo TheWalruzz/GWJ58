@@ -12,7 +12,10 @@ func _ready() -> void:
 
 
 func fade_and_free() -> void:
+	if not is_instance_valid(self):
+		return
+	
 	var tween := create_tween().tween_property(self, "modulate:a", 0.0, fade_out_duration) \
-		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 	await tween.finished
 	queue_free()

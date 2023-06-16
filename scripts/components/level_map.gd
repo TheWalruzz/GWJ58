@@ -23,6 +23,8 @@ const RainCloudScene := preload("res://scenes/components/rain_cloud.tscn")
 
 @export var time_limit := 30
 @export var shrine_atlas_coords := Vector2i(5, 2)
+@export var win_icon: Texture2D = null
+@export var next_level: PackedScene = null
 
 var tiles: Dictionary = {}
 var last_hovered := EMPTY_VECTOR
@@ -43,7 +45,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouse:
+	if PlayerService.is_running and event is InputEventMouse:
 		# for some reason event's global position didn't take camera zoom into account
 		var target_coords := local_to_map(to_local(get_global_mouse_position()))
 		
@@ -91,8 +93,8 @@ func _input(event: InputEvent) -> void:
 func tick() -> void:
 	var desert_tiles := _get_desert_tiles()
 	if desert_tiles.size() == 0:
-		PlayerService.finish_level()
 		# TODO: win message and next level window
+		_end_game()
 		return
 	
 	var candidates: Array[Vector2i] = []
@@ -191,6 +193,11 @@ func _toggle_cells(coords_list: Array[Vector2i], source_id: TileSource, max_tile
 	for tile in candidates:
 		var atlas_coords := get_cell_atlas_coords(TileLayer.BOTTOM, tile)
 		set_cell(TileLayer.BOTTOM, tile, source_id, atlas_coords)
+		
+		
+func _end_game() -> void:
+	PlayerService.finish_level()
+	UIService.show_message(win_icon, next_level)
 
 
 class MapTileData:

@@ -1,6 +1,8 @@
 extends Node
 
 
+const LossIcon := preload("res://assets/gfx/sprites/cross.png")
+
 var is_running := false
 var current_time_total := 60
 var energy := SxProperty.new(0)
@@ -24,17 +26,17 @@ func start_level(level: LevelMap, total_time := 60) -> void:
 	disposables = SxCompositeDisposable.new()
 	is_running = true
 	
-	Sx.interval_timer(Consts.GAME_TICK_INTERVAL).take_while(_is_valid) \
+	Sx.interval_timer(Consts.GAME_TICK_INTERVAL) \
 		.subscribe(_tick).dispose_with(disposables)
 	
-	level_tick_timer.as_signal().take_while(func(_x): return _is_valid()) \
+	level_tick_timer.as_signal() \
 		.filter(func(value: int): return value >= Consts.GAME_TICKS_TO_LEVEL_TICK) \
 		.subscribe(func(_x):
 			level.tick()
 			_reset_timer(level_tick_timer)
 	).dispose_with(disposables)
 	
-	energy_timer.as_signal().take_while(func(_x): return _is_valid()) \
+	energy_timer.as_signal() \
 		.filter(func(value: int): return value >= Consts.ENERGY_TICKS_TO_GAIN) \
 		.subscribe(func(_x):
 			energy.value += Consts.ENERGY_GAINED_AMOUNT
@@ -42,11 +44,14 @@ func start_level(level: LevelMap, total_time := 60) -> void:
 	).dispose_with(disposables)
 	
 	time.as_signal(false) \
-		.filter(func(value: int): return value <= 0) \
+		.filter(func(value: int): return value <= 0 and is_running) \
+		.first() \
 		.subscribe(func(_x):
-			# TODO: time's up! Show losing screen
-			pass
+			finish_level()
+			UIService.show_message(LossIcon)
 	).dispose_with(disposables)
+	
+	UIService.toggle_ui(true)
 
 
 func finish_level() -> void:
@@ -56,6 +61,7 @@ func finish_level() -> void:
 	level_tick_timer.value = 0
 	energy_timer.value = 0
 	disposables.dispose()
+	UIService.toggle_ui(false)
 
 
 func _is_valid() -> bool:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://eekwdg77uif6"]
+[gd_scene load_steps=15 format=3 uid="uid://eekwdg77uif6"]
 
 [ext_resource type="Script" path="res://scripts/services/ui_service.gd" id="1_xowr0"]
 [ext_resource type="Texture2D" uid="uid://cplrnutwpteop" path="res://assets/gfx/sprites/clouds/Cloud 5.png" id="2_sg71o"]
@@ -12,7 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://s2opdikj1ghh" path="res://assets/gfx/sprites/energy.png" id="8_rfb0l"]
 [ext_resource type="Texture2D" uid="uid://dh81nkkktxbpl" path="res://assets/gfx/sprites/LMB.png" id="9_vhwj1"]
 [ext_resource type="Texture2D" uid="uid://cwspl0gtdu4oh" path="res://assets/gfx/sprites/RMB.png" id="12_0d4xl"]
-[ext_resource type="Texture2D" uid="uid://bm70g8dhckp14" path="res://assets/gfx/tilesets/desert/Tiles/shrine-trimmed.png" id="13_ksb58"]
+[ext_resource type="Texture2D" uid="uid://bm70g8dhckp14" path="res://assets/gfx/tilesets/desert/shrine-trimmed.png" id="13_i4pqa"]
+[ext_resource type="Texture2D" uid="uid://b16pup7lyihii" path="res://icon.svg" id="14_qd6tt"]
 
 [node name="UIRoot" type="CanvasLayer"]
 script = ExtResource("1_xowr0")
@@ -163,7 +164,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 35)
 layout_mode = 2
 size_flags_horizontal = 4
-texture_normal = ExtResource("13_ksb58")
+texture_normal = ExtResource("13_i4pqa")
 ignore_texture_size = true
 stretch_mode = 4
 
@@ -207,3 +208,58 @@ expand_mode = 1
 modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
+
+[node name="MessageContainer" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+visible = false
+
+[node name="MessagePanel" type="Panel" parent="MessageContainer"]
+custom_minimum_size = Vector2(500, 250)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -150.0
+offset_right = 250.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MessageContainer/MessagePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MessageContainer/MessagePanel/MarginContainer"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MessageContainer/MessagePanel/MarginContainer/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="MessageIcon" type="TextureRect" parent="MessageContainer/MessagePanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("14_qd6tt")
+stretch_mode = 3
+
+[node name="HSeparator2" type="HSeparator" parent="MessageContainer/MessagePanel/MarginContainer/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="NextLevelButton" type="Button" parent="MessageContainer/MessagePanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = ">>"

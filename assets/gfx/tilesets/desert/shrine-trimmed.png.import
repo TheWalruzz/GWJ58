@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bm70g8dhckp14"
-path="res://.godot/imported/shrine-trimmed.png-d46bb5b4ec9e35246f679ecf3902c283.ctex"
+path="res://.godot/imported/shrine-trimmed.png-f89050e4049809856d52858eeea41265.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/gfx/tilesets/desert/Tiles/shrine-trimmed.png"
-dest_files=["res://.godot/imported/shrine-trimmed.png-d46bb5b4ec9e35246f679ecf3902c283.ctex"]
+source_file="res://assets/gfx/tilesets/desert/shrine-trimmed.png"
+dest_files=["res://.godot/imported/shrine-trimmed.png-f89050e4049809856d52858eeea41265.ctex"]
 
 [params]
 
