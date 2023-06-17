@@ -10,9 +10,11 @@ config_version=5
 
 [application]
 
-config/name="GWJ58"
+config/name="Greenery Temples"
+config/description="Puzzle games about making the world greener with shrines and rain!"
+run/main_scene="res://scenes/splash_screen.tscn"
 config/features=PackedStringArray("4.0", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://assets/gfx/sprites/energy.png"
 
 [autoload]
 

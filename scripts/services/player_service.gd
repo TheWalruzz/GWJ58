@@ -48,7 +48,7 @@ func start_level(level: LevelMap, total_time := 60) -> void:
 		.first() \
 		.subscribe(func(_x):
 			finish_level()
-			UIService.show_message(LossIcon)
+			UIService.show_message(LossIcon, false)
 	).dispose_with(disposables)
 	
 	UIService.toggle_ui(true)

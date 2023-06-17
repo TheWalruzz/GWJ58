@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://eekwdg77uif6"]
+[gd_scene load_steps=16 format=3 uid="uid://eekwdg77uif6"]
 
 [ext_resource type="Script" path="res://scripts/services/ui_service.gd" id="1_xowr0"]
 [ext_resource type="Texture2D" uid="uid://cplrnutwpteop" path="res://assets/gfx/sprites/clouds/Cloud 5.png" id="2_sg71o"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://cwspl0gtdu4oh" path="res://assets/gfx/sprites/RMB.png" id="12_0d4xl"]
 [ext_resource type="Texture2D" uid="uid://bm70g8dhckp14" path="res://assets/gfx/tilesets/desert/shrine-trimmed.png" id="13_i4pqa"]
 [ext_resource type="Texture2D" uid="uid://b16pup7lyihii" path="res://icon.svg" id="14_qd6tt"]
+[ext_resource type="Texture2D" uid="uid://db2y26tu1ljck" path="res://assets/gfx/sprites/next.png" id="15_r0pg4"]
 
 [node name="UIRoot" type="CanvasLayer"]
 script = ExtResource("1_xowr0")
@@ -262,4 +263,5 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-text = ">>"
+icon = ExtResource("15_r0pg4")
+icon_alignment = 1

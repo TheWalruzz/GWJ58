@@ -197,7 +197,7 @@ func _toggle_cells(coords_list: Array[Vector2i], source_id: TileSource, max_tile
 		
 func _end_game() -> void:
 	PlayerService.finish_level()
-	UIService.show_message(win_icon, next_level)
+	UIService.show_message(win_icon, next_level == null, next_level)
 
 
 class MapTileData:

@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3 uid="uid://4sblxvnad678"]
+
+[ext_resource type="Texture2D" uid="uid://derikmxpxnhxq" path="res://assets/gfx/1x1.png" id="1_dr4gg"]
+[ext_resource type="Script" path="res://scripts/components/ui/splash_screen.gd" id="1_w6pjt"]
+[ext_resource type="Texture2D" uid="uid://b16pup7lyihii" path="res://icon.svg" id="2_828am"]
+[ext_resource type="Texture2D" uid="uid://dpe2nkmw5afh4" path="res://assets/gfx/splash/godot-icon_monochrome_dark.svg" id="2_eg1ow"]
+[ext_resource type="Texture2D" uid="uid://dtwe4jnap50sk" path="res://assets/gfx/splash/GWJ-Full-Logo-noBG.svg" id="2_hbmlm"]
+[ext_resource type="Texture2D" uid="uid://dugttbx7smfw7" path="res://assets/gfx/splash/Textless.png" id="3_qkhbh"]
+[ext_resource type="PackedScene" uid="uid://dtrgbx76of1cm" path="res://scenes/main_menu.tscn" id="5_2a08c"]
+
+[node name="SplashScreen" type="CanvasLayer"]
+script = ExtResource("1_w6pjt")
+images = Array[Texture2D]([ExtResource("2_eg1ow"), ExtResource("2_hbmlm"), ExtResource("3_qkhbh")])
+next_scene = ExtResource("5_2a08c")
+
+[node name="Background" type="TextureRect" parent="."]
+modulate = Color(0, 0, 0, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_dr4gg")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 40
+
+[node name="Image" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = ExtResource("2_828am")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Fader" type="TextureRect" parent="."]
+modulate = Color(0, 0, 0, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_dr4gg")
