@@ -216,12 +216,3 @@ script = ExtResource("3_6adnv")
 rustle_sound = ExtResource("4_7dlkn")
 build_sound = ExtResource("5_puyth")
 win_icon = ExtResource("5_7c7g3")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="DebugLabel" type="Label" parent="CanvasLayer"]
-unique_name_in_owner = true
-visible = false
-offset_right = 40.0
-offset_bottom = 23.0
-auto_translate = false

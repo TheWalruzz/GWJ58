@@ -31,12 +31,8 @@ const RainCloudScene := preload("res://scenes/components/rain_cloud.tscn")
 var tiles: Dictionary = {}
 var last_hovered := EMPTY_VECTOR
 
-@onready var debug_label: Label = %DebugLabel as Label
-
 
 func _ready() -> void:
-	debug_label.visible = OS.is_debug_build()
-	
 	for cell in get_used_cells(TileLayer.BOTTOM):
 		var coords := cell as Vector2i
 		var tile_data := MapTileData.new()
@@ -50,9 +46,6 @@ func _input(event: InputEvent) -> void:
 	if PlayerService.is_running and event is InputEventMouse:
 		# for some reason event's global position didn't take camera zoom into account
 		var target_coords := local_to_map(to_local(get_global_mouse_position()))
-		
-		if OS.is_debug_build():
-			debug_label.text = "%s" % str(target_coords)
 			
 		# hover
 		if last_hovered != EMPTY_VECTOR and last_hovered != target_coords:
