@@ -21,8 +21,8 @@ func _ready() -> void:
 
 	PlayerService.energy.as_signal().filter(func(_x): return ui.visible) \
 		.subscribe(func(value: int):
-			rain_button.modulate.a = 0.6 if value < Consts.RAIN_ENERGY_COST else 1
-			shrine_button.modulate.a = 0.6 if value < Consts.SHRINE_ENERGY_COST else 1
+			rain_button.modulate.a = 0.6 if value < Consts.RAIN_ENERGY_COST else 1.0
+			shrine_button.modulate.a = 0.6 if value < Consts.SHRINE_ENERGY_COST else 1.0
 	).dispose_with(self)
 
 

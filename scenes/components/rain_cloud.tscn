@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dtxwyshn15572"]
+[gd_scene load_steps=8 format=3 uid="uid://dtxwyshn15572"]
 
 [ext_resource type="Script" path="res://scripts/components/rain_cloud.gd" id="1_0ty4n"]
 [ext_resource type="Texture2D" uid="uid://cplrnutwpteop" path="res://assets/gfx/sprites/clouds/Cloud 5.png" id="1_mhh1e"]
 [ext_resource type="Texture2D" uid="uid://derikmxpxnhxq" path="res://assets/gfx/1x1.png" id="1_oqm35"]
+[ext_resource type="AudioStream" uid="uid://c2jblkxh7g417" path="res://assets/sfx/687087__deadrobotmusic__tahoe-rain-1.ogg" id="2_xm41s"]
 [ext_resource type="Texture2D" uid="uid://e3it4ce771qu" path="res://assets/gfx/sprites/shadow.png" id="4_4hihp"]
 
 [sub_resource type="Curve" id="Curve_5xfop"]
@@ -16,6 +17,7 @@ colors = PackedColorArray(0, 0.631373, 1, 0.941176, 0, 0.631373, 1, 0.941176, 1,
 [node name="RainCloud" type="Node2D"]
 scale = Vector2(3, 3)
 script = ExtResource("1_0ty4n")
+rain_sound = ExtResource("2_xm41s")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="."]
 z_index = 6

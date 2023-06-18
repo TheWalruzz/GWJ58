@@ -1,8 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://jqm4oxi2u43n"]
+[gd_scene load_steps=10 format=3 uid="uid://jqm4oxi2u43n"]
 
 [ext_resource type="Texture2D" uid="uid://cjo13sjre4pjb" path="res://assets/gfx/tilesets/desert/desert_tilesheet.png" id="1_xqrir"]
 [ext_resource type="Texture2D" uid="uid://hpkj27ekv6b1" path="res://assets/gfx/tilesets/green/green_tileset.png" id="2_c4u1k"]
 [ext_resource type="Script" path="res://scripts/components/level_map.gd" id="3_6adnv"]
+[ext_resource type="AudioStream" uid="uid://3cul77spw6xt" path="res://assets/sfx/364712__alegemaate__rustling-grass.ogg" id="4_7dlkn"]
+[ext_resource type="Texture2D" uid="uid://ctunye4tsq6oo" path="res://assets/gfx/sprites/star.png" id="5_7c7g3"]
+[ext_resource type="AudioStream" uid="uid://dkk3l78n4o4os" path="res://assets/sfx/455899__samuelgremaud__hammer.ogg" id="5_puyth"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3yq0q"]
 resource_name = "Desert"
@@ -210,6 +213,9 @@ layer_2/y_sort_origin = 0
 layer_2/z_index = 0
 layer_2/tile_data = PackedInt32Array()
 script = ExtResource("3_6adnv")
+rustle_sound = ExtResource("4_7dlkn")
+build_sound = ExtResource("5_puyth")
+win_icon = ExtResource("5_7c7g3")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

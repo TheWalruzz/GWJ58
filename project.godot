@@ -19,6 +19,7 @@ config/icon="res://assets/gfx/sprites/energy.png"
 [autoload]
 
 Sx="*res://addons/signal_extensions/sx_autoload.gd"
+SoundService="*res://scripts/services/sound_service.gd"
 PlayerService="*res://scripts/services/player_service.gd"
 UIService="*res://scenes/ui/ui_root.tscn"
 

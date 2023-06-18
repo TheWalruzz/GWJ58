@@ -23,6 +23,8 @@ const RainCloudScene := preload("res://scenes/components/rain_cloud.tscn")
 
 @export var time_limit := 30
 @export var shrine_atlas_coords := Vector2i(5, 2)
+@export var rustle_sound: AudioStream = null
+@export var build_sound: AudioStream = null
 @export var win_icon: Texture2D = null
 @export var next_level: PackedScene = null
 
@@ -72,30 +74,34 @@ func _input(event: InputEvent) -> void:
 					cloud.position = Vector2(local_tile_coords.x, local_tile_coords.y - 192)
 					add_child(cloud)
 					
-					Sx.interval_timer(Consts.RAIN_INTERVAL).take(Consts.RAIN_ITERATIONS).subscribe(
-						func():
-							_toggle_cells(
-								_get_closest_desert_coords(target_coords), 
-								TileSource.GREEN, 
-								Consts.RAIN_TILES_PER_ITERATION
-							),
-						0,
-						func():
-							cloud.fade_and_free()
-							tiles[target_coords].is_raining = false
+					Sx.interval_timer(Consts.RAIN_INTERVAL) \
+						.take(Consts.RAIN_ITERATIONS) \
+						.take_while(func(): return PlayerService.is_running) \
+						.subscribe(
+							func():
+								_toggle_cells(
+									_get_closest_desert_coords(target_coords), 
+									TileSource.GREEN, 
+									Consts.RAIN_TILES_PER_ITERATION
+								)
+								
+								if _get_desert_tiles().size() == 0:
+									tiles[target_coords].is_raining = false
+									_end_game(),
+							0,
+							func():
+								cloud.fade_and_free()
+								tiles[target_coords].is_raining = false
 					).dispose_with(self)
 				if event.is_action_pressed("build_shrine") and _can_build_shrine(target_coords):
 					PlayerService.energy.value -= Consts.SHRINE_ENERGY_COST
 					tiles[target_coords].has_shrine = true
 					set_cell(TileLayer.MIDDLE, _get_shrine_coords(target_coords), TileSource.GREEN, shrine_atlas_coords)
+					SoundService.play(build_sound, "Sounds")
 	
 	
 func tick() -> void:
 	var desert_tiles := _get_desert_tiles()
-	if desert_tiles.size() == 0:
-		# TODO: win message and next level window
-		_end_game()
-		return
 	
 	var candidates: Array[Vector2i] = []
 	for tile in desert_tiles:
@@ -107,6 +113,8 @@ func tick() -> void:
 		TileSource.DESERT,
 		Consts.DESERT_TILES_PER_ITERATION
 	)
+	
+	SoundService.play(rustle_sound, "Sounds")
 	
 
 func _get_shrine_coords(coords: Vector2i) -> Vector2i:

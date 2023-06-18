@@ -1,6 +1,7 @@
 extends Object
 class_name Consts
 
+
 const GAME_TICK_INTERVAL := 1.0
 const GAME_TICKS_TO_LEVEL_TICK := 5
 

@@ -56,10 +56,6 @@ func start_level(level: LevelMap, total_time := 60) -> void:
 
 func finish_level() -> void:
 	is_running = false
-	energy.value = 0
-	time.value = 0
-	level_tick_timer.value = 0
-	energy_timer.value = 0
 	disposables.dispose()
 	UIService.toggle_ui(false)
 

@@ -1,12 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://dtrgbx76of1cm"]
+[gd_scene load_steps=18 format=3 uid="uid://dtrgbx76of1cm"]
 
 [ext_resource type="Script" path="res://scripts/components/ui/main_menu.gd" id="1_ikrnr"]
 [ext_resource type="Texture2D" uid="uid://cjo13sjre4pjb" path="res://assets/gfx/tilesets/desert/desert_tilesheet.png" id="1_kv5u5"]
 [ext_resource type="Texture2D" uid="uid://hpkj27ekv6b1" path="res://assets/gfx/tilesets/green/green_tileset.png" id="2_bph24"]
 [ext_resource type="PackedScene" uid="uid://csqtd6sn4nc0j" path="res://scenes/levels/level01.tscn" id="2_pb3j4"]
-[ext_resource type="PackedScene" uid="uid://dtxwyshn15572" path="res://scenes/components/rain_cloud.tscn" id="3_ouwmk"]
+[ext_resource type="AudioStream" uid="uid://f0gqpfmu5fb3" path="res://assets/sfx/648952__infi1234__equip.wav" id="3_k5fr8"]
+[ext_resource type="AudioStream" uid="uid://bgb1j511s5w1" path="res://assets/sfx/256125__plukx__amb_bardenas_wind_birds_leaves_strong_mod_2.ogg" id="4_rfu4j"]
 [ext_resource type="Texture2D" uid="uid://u8dq17haj414" path="res://assets/gfx/sprites/play.png" id="4_tlrrl"]
+[ext_resource type="Texture2D" uid="uid://derikmxpxnhxq" path="res://assets/gfx/1x1.png" id="6_q26ys"]
 [ext_resource type="Texture2D" uid="uid://bcgnj7mylsab3" path="res://assets/gfx/sprites/play-pressed.png" id="7_mg1dq"]
+[ext_resource type="Texture2D" uid="uid://cplrnutwpteop" path="res://assets/gfx/sprites/clouds/Cloud 5.png" id="7_oj61y"]
+[ext_resource type="Texture2D" uid="uid://e3it4ce771qu" path="res://assets/gfx/sprites/shadow.png" id="8_1t0wm"]
+[ext_resource type="AudioStream" uid="uid://c2jblkxh7g417" path="res://assets/sfx/687087__deadrobotmusic__tahoe-rain-1.ogg" id="9_s83e6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3yq0q"]
 resource_name = "Desert"
@@ -190,9 +195,19 @@ custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_3yq0q")
 sources/1 = SubResource("TileSetAtlasSource_1ubrc")
 
+[sub_resource type="Curve" id="Curve_5xfop"]
+_data = [Vector2(0, 1), 0.0, -0.386562, 0, 0, Vector2(1, 0), -4.18396, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_3na4l"]
+offsets = PackedFloat32Array(0, 0.986441, 1)
+colors = PackedColorArray(0, 0.631373, 1, 0.941176, 0, 0.631373, 1, 0.941176, 1, 1, 1, 0)
+
 [node name="MainMenu" type="Node2D"]
 script = ExtResource("1_ikrnr")
 first_level = ExtResource("2_pb3j4")
+click_sound = ExtResource("3_k5fr8")
+music_loop = ExtResource("4_rfu4j")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.5, 0.5)
@@ -221,8 +236,48 @@ layer_2/y_sort_origin = 0
 layer_2/z_index = 0
 layer_2/tile_data = PackedInt32Array(-393211, 393217, 2, -327675, 393217, 2, -262139, 393217, 2, -393212, 393217, 2, -327676, 393217, 2, -196604, 393217, 2, -262140, 393217, 2, -196603, 393217, 2, -393213, 393217, 2, -327677, 393217, 2, -262141, 262145, 0, -196605, 327681, 1, -393214, 393217, 2, -327678, 393217, 2, -262142, 393217, 2, -196606, 393217, 2, -393215, 393217, 2, -327679, 393217, 2, -262143, 393216, 2, -196607, 393216, 2)
 
-[node name="RainCloud" parent="." instance=ExtResource("3_ouwmk")]
+[node name="RainCloud" type="Node2D" parent="."]
 position = Vector2(210, -490)
+scale = Vector2(3, 3)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="RainCloud"]
+z_index = 6
+amount = 48
+lifetime = 0.35
+speed_scale = 0.7
+randomness = 0.1
+local_coords = true
+texture = ExtResource("6_q26ys")
+emission_shape = 3
+emission_rect_extents = Vector2(40, 1)
+direction = Vector2(0, 1)
+initial_velocity_max = 20.0
+linear_accel_min = -10.0
+linear_accel_max = 10.0
+scale_amount_min = 2.5
+scale_amount_max = 2.5
+split_scale = true
+scale_curve_x = SubResource("Curve_5xfop")
+scale_curve_y = null
+color_ramp = SubResource("Gradient_3na4l")
+
+[node name="Cloud" type="Sprite2D" parent="RainCloud"]
+z_index = 7
+position = Vector2(0, -3)
+texture = ExtResource("7_oj61y")
+
+[node name="Shadow" type="Sprite2D" parent="RainCloud"]
+modulate = Color(1, 1, 1, 0.470588)
+z_index = 5
+position = Vector2(0.666667, 64)
+scale = Vector2(0.349462, 0.349462)
+texture = ExtResource("8_1t0wm")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="RainCloud"]
+stream = ExtResource("9_s83e6")
+volume_db = -10.0
+autoplay = true
+bus = &"Sounds"
 
 [node name="Menu" type="CanvasLayer" parent="."]
 
@@ -238,5 +293,6 @@ offset_right = -7.0
 offset_bottom = 234.5
 grow_horizontal = 2
 grow_vertical = 2
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("4_tlrrl")
 texture_hover = ExtResource("7_mg1dq")
